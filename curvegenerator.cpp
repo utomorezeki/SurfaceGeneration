@@ -2,6 +2,10 @@
 #include "ui_curvegenerator.h"
 #include "mathematics.h"
 #include <QDebug>
+#include <iostream>
+#include <fstream>
+#include <mesh.h>
+#include "generate3d.h"
 
 CurveGenerator::CurveGenerator(QWidget *parent) :
     QMainWindow(parent),
@@ -45,6 +49,8 @@ CurveGenerator::CurveGenerator(QWidget *parent) :
     connect(ui->xSlider,SIGNAL(valueChanged(int)),this,SLOT(xUpdate(int)));
     connect(ui->ySlider,SIGNAL(valueChanged(int)),this,SLOT(yUpdate(int)));
     connect(ui->subdSlider,SIGNAL(valueChanged(int)),this,SLOT(subdUpdate(int)));
+
+    //vector<GeomVert> test = Gen3D::revCalcCir(0.2,3.0);
 }
 
 void CurveGenerator::clickedGraph(QMouseEvent *event)
@@ -314,4 +320,42 @@ void CurveGenerator::on_triple_clicked()
         ui->ctrlSlider->setValue(qv_x.size());
         plot();
     }
+}
+
+void CurveGenerator::on_pushButton_clicked()
+{
+    Mesh mesh;
+    Gen3D::revCalcFaces(gr_x,gr_y,&mesh);
+    print3D(mesh);
+}
+
+void CurveGenerator::print3D(Mesh mesh)
+{
+    std::ofstream outfile("test.off");
+    outfile << "OFF" << std::endl;
+    outfile << mesh.GetNumberVertices() << " " << mesh.GetNumberFacets() << " " << mesh.GetNumberEdges()  << std::endl;
+    for(int n = 0; n < mesh.GetNumberVertices(); n++)
+    {
+        GeomVert vertx = mesh.GetGeomVertex(n);
+        outfile << vertx.GetCo(0) << " " << vertx.GetCo(1) << " " << vertx.GetCo(2) << std::endl;
+    }
+    for(int n = 0; n < mesh.GetNumberFacets(); n++)
+    {
+        TopoFacet facetx = mesh.GetFacet(n);
+        int numOfVert = facetx.GetNumberVertices();
+        outfile << numOfVert << "  ";
+        for(int i = 0; i < numOfVert; i++)
+        {
+            outfile << facetx.GetVertexInd(i) << " ";
+        }
+        outfile << std::endl;
+    }
+    outfile.close();
+}
+
+void CurveGenerator::on_pushButton_2_clicked()
+{
+    Mesh mesh;
+    Gen3D::extCalcFaces(gr_x,gr_y,&mesh);
+    print3D(mesh);
 }

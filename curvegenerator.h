@@ -2,6 +2,7 @@
 #define CURVEGENERATOR_H
 
 #include <QMainWindow>
+#include "mesh.h"
 
 namespace Ui {
 class CurveGenerator;
@@ -18,6 +19,7 @@ public:
 
     void addPoint(double x, double y);
     void plot();
+    void print3D(Mesh mesh);
 
 
 private slots:
@@ -36,6 +38,10 @@ private slots:
     void on_double_2_clicked();
 
     void on_triple_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::CurveGenerator *ui;

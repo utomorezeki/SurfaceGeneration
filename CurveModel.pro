@@ -27,12 +27,16 @@ SOURCES += \
         main.cpp \
         curvegenerator.cpp \
     qcustomplot.cpp \
-    mathematics.cpp
+    mathematics.cpp \
+    mesh.cpp \
+    generate3d.cpp
 
 HEADERS += \
         curvegenerator.h \
     qcustomplot.h \
-    mathematics.h
+    mathematics.h \
+    mesh.h \
+    generate3d.h
 
 FORMS += \
         curvegenerator.ui
