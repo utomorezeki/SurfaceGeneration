@@ -2,18 +2,17 @@
 #include <cmath>
 #include "mesh.h"
 
+#define PI 3.14159265
+
 void Gen3D::revCalcFaces(QVector<double> gr_x, QVector<double> gr_y , Mesh *mesh, int revSlices)
 {
     for (int i = 0; i < gr_x.size() - 1; i++)
     {
         vector<GeomVert> fGV,sGV;
-        double interval = gr_y.at(i) / 5;
-        fGV = revCalcCir(interval, gr_x.at(i));
+        fGV = revCalcCir(revSlices, gr_x.at(i), gr_y.at(i));
+        sGV = revCalcCir(revSlices, gr_x.at(i + 1), gr_y.at(i + 1));
 
-        double secInterval = gr_y.at(i + 1) / 5;
-        sGV = revCalcCir(secInterval, gr_x.at(i + 1));
-
-        for(int j = 0; j < 19; j++)
+        for(int j = 0; j < revSlices - 1; j++)
         {
             vector<GeomVert> toBeAdded;
             toBeAdded.push_back(fGV[j]);
@@ -27,48 +26,31 @@ void Gen3D::revCalcFaces(QVector<double> gr_x, QVector<double> gr_y , Mesh *mesh
             mesh->AddFacet(toBeAdded);
         }
         vector<GeomVert> toBeAdded;
-        toBeAdded.push_back(fGV[19]);
+        toBeAdded.push_back(fGV[revSlices - 1]);
         toBeAdded.push_back(fGV[0]);
-        toBeAdded.push_back(sGV[19]);
+        toBeAdded.push_back(sGV[revSlices - 1]);
         mesh->AddFacet(toBeAdded);
         toBeAdded.clear();
-        toBeAdded.push_back(sGV[19]);
+        toBeAdded.push_back(sGV[revSlices - 1]);
         toBeAdded.push_back(fGV[0]);
         toBeAdded.push_back(sGV[0]);
         mesh->AddFacet(toBeAdded);
     }
 }
 
-vector<GeomVert> Gen3D::revCalcCir(double interval, double xVal)
+vector<GeomVert> Gen3D::revCalcCir(int revSlices, double xVal, double yVal)
 {
-    double radius = pow(interval * 5, 2.0);
     vector<GeomVert> retVal;
-    QVector<double> yVal, zVal;
-    for(int i = 0; i < 11; i++)
+    retVal.push_back( GeomVert(xVal, yVal, 0.0) ); //first pt on the ground z=0
+
+    double degreeInterval = 360.0 / revSlices;
+
+    for(int i = 1; i < revSlices; i++)
     {
-        yVal.append(interval * (i - 5));
-        if (i < 6)
-            zVal.append(sqrt(radius - pow(yVal.at(i), 2.0)));
-        else if (i == 10)
-            zVal.insert(0, (-1) * yVal.at(10));
-        else
-            zVal.insert(i - 6, (-1) * sqrt(radius - pow(yVal.at(i), 2.0)));
-    }
-    //INSERTING TOP HALF
-    for(int i = 0; i < 10; i++)
-    {
-        if (i < 6)
-            retVal.push_back( GeomVert(xVal, yVal.at(10- i), zVal.at(5 + i)) );
-        else
-            retVal.push_back( GeomVert(xVal, yVal.at(10- i), zVal.at(15 - i)) );
-    }
-    //INSERT BOT HALF
-    for(int i = 0; i < 10; i++)
-    {
-        if (i < 6)
-            retVal.push_back( GeomVert(xVal, yVal.at(i), zVal.at(5 - i)) );
-        else
-            retVal.push_back( GeomVert(xVal, yVal.at(i), zVal.at(i - 5)) );
+        double currentDeg = i * degreeInterval;
+        double curY = cos(currentDeg * PI / 180) * yVal;
+        double curZ = sin(currentDeg * PI / 180) * yVal;
+        retVal.push_back( GeomVert(xVal, curY, curZ) );
     }
 
     return retVal;
