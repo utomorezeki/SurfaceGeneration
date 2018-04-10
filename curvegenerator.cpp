@@ -70,7 +70,61 @@ CurveGenerator::CurveGenerator(QWidget *parent) :
     revSlices = 10;
     extDepth = 0;
     ui->revSpinBx->setMinimum(10);
-    //vector<GeomVert> test = Gen3D::revCalcCir(0.2,3.0);
+    ui->spinBox_2->setMinimum(100);
+    ui->spinBox_2->setMaximum(400);
+    ui->spinBox_2->setSingleStep(20);
+    ui->uSpin->setMinimum(0.05);
+    ui->wSpin->setMinimum(0.05);
+    ui->uSpin->setMaximum(1.0);
+    ui->wSpin->setMaximum(1.0);
+    ui->uSpin->setSingleStep(0.05);
+    ui->wSpin->setSingleStep(0.05);
+    uThreeD = 0.05;
+    wThreeD = 0.05;
+    Mesh read = MeshReader::readMesh("abstr.off");
+    print3D(read, "READ.off");
+
+    CatmullClark readCat = CatmullClark();
+    Mesh ReadCatmull = readCat.generateMesh(&read);
+    print3D(ReadCatmull, "READCATMULL.off");
+
+    Mesh vanish;
+    Test::testVanish(&vanish);
+    print3D(vanish, "vanish.off");
+
+    //CatmullClark van1 = CatmullClark();
+    //Mesh van11 = van1.generateMesh(&vanish);
+    //print3D(van11, "vanish1.off");
+
+    //CatmullClark vanStart = CatmullClark();
+    //Mesh van22 = vanStart.generateMesh(&van11);
+    //for(int zz = 0; zz < 3; zz++){
+    //    CatmullClark van2 = CatmullClark();
+    //    van22 = van2.generateMesh(&van22);
+    //}
+    //print3D(van22, "vanish2.off");
+
+    //Mesh test1;
+    //Mesh test1DSB;
+    //Test::test1DSB(&test1, &test1DSB);
+    //print3D(test1, "TEST1.off");
+    //print3D(test1DSB, "TEST1DSB.off");
+
+    //Mesh test2;
+    //Mesh test2DSB;
+    //Test::test2DSB(&test2, &test2DSB);
+    //print3D(test2, "TEST2.off");
+    //print3D(test2DSB, "TEST2DSB.off");
+
+    //Mesh testCCL1;
+    //Mesh res = Test::test1CCL(&testCCL1);
+    //print3D(res, "TEST1CCL.off");
+    //print3D(testCCL1, "TESTNormalCCL1.off");
+
+    //Mesh testLoop1;
+    //Mesh loopRes = Test::test1LOOP(&testLoop1);
+    //print3D(loopRes, "TEST1LOOP.off");
+    //print3D(testLoop1, "TEST1LOOPNORMAL.off");
 }
 
 void CurveGenerator::clickedGraph(QMouseEvent *event)
@@ -466,8 +520,11 @@ void CurveGenerator::on_triple_clicked()
 void CurveGenerator::on_pushButton_clicked()
 {
     Mesh mesh;
-    Gen3D::revCalcFaces(gr_x,gr_y,&mesh, revSlices);
+    Polyhedron poly = Gen3D::revCalcFaces(gr_x,gr_y,&mesh, revSlices);
     print3D(mesh, "revolution.off");
+    Mesh mesh1;
+    Gen3D::extBezCalcMesh(&mesh1, poly, uThreeD,wThreeD, 1);
+    print3D(mesh1, "BEZ.off");
 }
 
 void CurveGenerator::print3D(Mesh mesh, std::string fileNm)
@@ -498,8 +555,28 @@ void CurveGenerator::print3D(Mesh mesh, std::string fileNm)
 void CurveGenerator::on_pushButton_2_clicked()
 {
     Mesh mesh;
-    Gen3D::extCalcFaces(gr_x,gr_y,&mesh, extDepth);
+    Polyhedron poly = Gen3D::extCalcFaces(gr_x,gr_y,&mesh, extDepth);
+    Mesh mesh1;
+    Gen3D::extBezCalcMesh(&mesh1, poly, uThreeD,wThreeD, 0);
+    Mesh mesh2;
+    Gen3D::extCBBSCalcMesh(&mesh2, poly, uThreeD,wThreeD, 0);
     print3D(mesh, "extrusion.off");
+    print3D(mesh1, "BEZ.off");
+    print3D(mesh2, "CBBS.off");
+    Mesh subD;
+    OriginalVert oriVert;
+    OriginalFace oriFace;
+    Subdivision::dooSabinCalcFace(&mesh,&subD, &oriVert, &oriFace);
+    Subdivision::dooSabinCalcEdge(&mesh,&subD, &oriVert);
+    Subdivision::dooSabinCalcVert(&mesh,&subD, &oriVert, &oriFace);
+    print3D(subD, "DOOSABIN.off");
+    CatmullClark catM = CatmullClark();
+    Mesh res = catM.generateMesh(&mesh);
+    print3D(res, "CATMULL.off");
+
+    LoopSubdiv loopS = LoopSubdiv();
+    Mesh loop = loopS.calculateMesh(&mesh);
+    print3D(loop, "LOOP.off");
 }
 
 
@@ -521,4 +598,14 @@ void CurveGenerator::on_revSpinBx_valueChanged(int arg1)
 void CurveGenerator::on_spinBox_2_valueChanged(int arg1)
 {
     extDepth = arg1;
+}
+
+void CurveGenerator::on_uSpin_valueChanged(double arg1)
+{
+    uThreeD = arg1;
+}
+
+void CurveGenerator::on_wSpin_valueChanged(double arg1)
+{
+    wThreeD = arg1;
 }

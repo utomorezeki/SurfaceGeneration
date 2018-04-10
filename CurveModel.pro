@@ -29,14 +29,32 @@ SOURCES += \
     qcustomplot.cpp \
     mathematics.cpp \
     mesh.cpp \
-    generate3d.cpp
+    generate3d.cpp \
+    polyhedron.cpp \
+    subdivision.cpp \
+    originalvert.cpp \
+    catmullclark.cpp \
+    catmulloriginal.cpp \
+    test.cpp \
+    originalface.cpp \
+    loopsubdiv.cpp \
+    meshreader.cpp
 
 HEADERS += \
         curvegenerator.h \
     qcustomplot.h \
     mathematics.h \
     mesh.h \
-    generate3d.h
+    generate3d.h \
+    polyhedron.h \
+    subdivision.h \
+    originalvert.h \
+    catmullclark.h \
+    catmulloriginal.h \
+    test.h \
+    originalface.h \
+    loopsubdiv.h \
+    meshreader.h
 
 FORMS += \
         curvegenerator.ui

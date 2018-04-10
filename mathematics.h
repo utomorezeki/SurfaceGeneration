@@ -19,6 +19,8 @@ public:
     static QVector<double> oneDivBspl(QVector<double> qv);
     static QVector<double> subdivBspl(QVector<double> qv, int m);
     static double fRand(double min, double max);
+
+    static QVector<double> calcBernstein(int max, double u);
 private:
     Mathematics(){}
 };

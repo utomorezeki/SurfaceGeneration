@@ -34,6 +34,24 @@ double Mathematics::compXPtBezMan(double u,QVector<double> *qv_x)
     return ans;
 }
 
+QVector<double> Mathematics::calcBernstein(int max, double u) //all bernstein poly for particular u
+{
+    if(u > 0.9){
+        double dummy = 1.0;
+    }
+    QVector<double> bVals;
+    for(int n = 0; n < max; n++)
+    {
+        double nCCk = nCk(max, n);
+        double uPowerI = pow(u ,(double)n);
+        double oneMinU = pow((1.0 - u),((double)max - n));
+        double currB = nCk(max - 1, n) * pow(u ,(double)n) * pow((1.0 - u),((double)(max-1) - n));
+        double TEST = nCCk * uPowerI * oneMinU;
+        bVals.append(currB);
+    }
+    return bVals;
+}
+
 double Mathematics::compYPtBezMan(double u,QVector<double> *qv_y)
 {
     QVector<double> bVals;

@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include "mesh.h"
+#include "subdivision.h"
+#include "catmullclark.h"
+#include "test.h"
+#include "meshreader.h"
 
 namespace Ui {
 class CurveGenerator;
@@ -20,7 +24,6 @@ public:
     void addPoint(double x, double y);
     void plot();
     void print3D(Mesh mesh, std::string fileNm);
-
 
 private slots:
     void on_bezier_clicked();
@@ -57,12 +60,16 @@ private slots:
 
     void on_spinBox_2_valueChanged(int arg1);
 
+    void on_uSpin_valueChanged(double arg1);
+
+    void on_wSpin_valueChanged(double arg1);
+
 private:
     Ui::CurveGenerator *ui;
     QVector<double> qv_x,qv_y,gr_x,gr_y,pt_x,pt_y, qv2_x, qv2_y,gr2_x,gr2_y,pt2_x,pt2_y;
     int ptIdx,subd, ptIdx2, revSlices, extDepth;
     bool bez,cbBS,cSD,qSD,init, init2,bez2,cbBS2;
-    double subdivideU;
+    double subdivideU, uThreeD,wThreeD;
 };
 
 #endif // CURVEGENERATOR_H
