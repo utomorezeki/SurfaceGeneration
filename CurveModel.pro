@@ -11,12 +11,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = CurveModel
 TEMPLATE = app
 
+INCLUDEPATH +=  /usr/include/
+LIBS        += -L/usr/include/
+LIBS        += -lCGAL
+LIBS        += -lgmp
+QMAKE_CXXFLAGS += -frounding-math -O3
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -31,14 +36,7 @@ SOURCES += \
     mesh.cpp \
     generate3d.cpp \
     polyhedron.cpp \
-    subdivision.cpp \
-    originalvert.cpp \
-    catmullclark.cpp \
-    catmulloriginal.cpp \
-    test.cpp \
-    originalface.cpp \
-    loopsubdiv.cpp \
-    meshreader.cpp
+    nncrust.cpp
 
 HEADERS += \
         curvegenerator.h \
@@ -47,14 +45,7 @@ HEADERS += \
     mesh.h \
     generate3d.h \
     polyhedron.h \
-    subdivision.h \
-    originalvert.h \
-    catmullclark.h \
-    catmulloriginal.h \
-    test.h \
-    originalface.h \
-    loopsubdiv.h \
-    meshreader.h
+    nncrust.h
 
 FORMS += \
         curvegenerator.ui

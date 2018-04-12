@@ -81,50 +81,14 @@ CurveGenerator::CurveGenerator(QWidget *parent) :
     ui->wSpin->setSingleStep(0.05);
     uThreeD = 0.05;
     wThreeD = 0.05;
-    Mesh read = MeshReader::readMesh("abstr.off");
-    print3D(read, "READ.off");
 
-    CatmullClark readCat = CatmullClark();
-    Mesh ReadCatmull = readCat.generateMesh(&read);
-    print3D(ReadCatmull, "READCATMULL.off");
+    NNCrust test;
+    test.initial();
+    //qDebug() << "BOOL RETVAL: " << test.angleQual(0,0,1);
+    //qDebug() << "BOOL RETVAL: " << test.angleQual(3,3,5);
+    test.pickEdges();
+    test.traverseE();
 
-    Mesh vanish;
-    Test::testVanish(&vanish);
-    print3D(vanish, "vanish.off");
-
-    //CatmullClark van1 = CatmullClark();
-    //Mesh van11 = van1.generateMesh(&vanish);
-    //print3D(van11, "vanish1.off");
-
-    //CatmullClark vanStart = CatmullClark();
-    //Mesh van22 = vanStart.generateMesh(&van11);
-    //for(int zz = 0; zz < 3; zz++){
-    //    CatmullClark van2 = CatmullClark();
-    //    van22 = van2.generateMesh(&van22);
-    //}
-    //print3D(van22, "vanish2.off");
-
-    //Mesh test1;
-    //Mesh test1DSB;
-    //Test::test1DSB(&test1, &test1DSB);
-    //print3D(test1, "TEST1.off");
-    //print3D(test1DSB, "TEST1DSB.off");
-
-    //Mesh test2;
-    //Mesh test2DSB;
-    //Test::test2DSB(&test2, &test2DSB);
-    //print3D(test2, "TEST2.off");
-    //print3D(test2DSB, "TEST2DSB.off");
-
-    //Mesh testCCL1;
-    //Mesh res = Test::test1CCL(&testCCL1);
-    //print3D(res, "TEST1CCL.off");
-    //print3D(testCCL1, "TESTNormalCCL1.off");
-
-    //Mesh testLoop1;
-    //Mesh loopRes = Test::test1LOOP(&testLoop1);
-    //print3D(loopRes, "TEST1LOOP.off");
-    //print3D(testLoop1, "TEST1LOOPNORMAL.off");
 }
 
 void CurveGenerator::clickedGraph(QMouseEvent *event)
@@ -563,23 +527,7 @@ void CurveGenerator::on_pushButton_2_clicked()
     print3D(mesh, "extrusion.off");
     print3D(mesh1, "BEZ.off");
     print3D(mesh2, "CBBS.off");
-    Mesh subD;
-    OriginalVert oriVert;
-    OriginalFace oriFace;
-    Subdivision::dooSabinCalcFace(&mesh,&subD, &oriVert, &oriFace);
-    Subdivision::dooSabinCalcEdge(&mesh,&subD, &oriVert);
-    Subdivision::dooSabinCalcVert(&mesh,&subD, &oriVert, &oriFace);
-    print3D(subD, "DOOSABIN.off");
-    CatmullClark catM = CatmullClark();
-    Mesh res = catM.generateMesh(&mesh);
-    print3D(res, "CATMULL.off");
-
-    LoopSubdiv loopS = LoopSubdiv();
-    Mesh loop = loopS.calculateMesh(&mesh);
-    print3D(loop, "LOOP.off");
 }
-
-
 
 void CurveGenerator::on_pushButton_3_clicked()
 {

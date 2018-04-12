@@ -3,10 +3,7 @@
 
 #include <QMainWindow>
 #include "mesh.h"
-#include "subdivision.h"
-#include "catmullclark.h"
-#include "test.h"
-#include "meshreader.h"
+#include "nncrust.h"
 
 namespace Ui {
 class CurveGenerator;

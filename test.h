@@ -5,6 +5,7 @@
 #include "subdivision.h"
 #include "catmullclark.h"
 #include "loopsubdiv.h"
+#include "CGAL/Simple_cartesian.h"
 
 class Test
 {
