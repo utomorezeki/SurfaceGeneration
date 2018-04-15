@@ -3,7 +3,7 @@
 #include <cmath>
 #include <qvector2d.h>
 
-void NNCrust::initial()
+void NNCrust::test()
 {
     vector<Point> points;
     points.push_back(Point(10,10));   // first point
@@ -120,7 +120,7 @@ void NNCrust::pickEdges()
 
 }
 
-void NNCrust::traverseE()
+vector<int> NNCrust::traverseE()
 {
     std::set<int>::iterator it=inclEdges.begin();
     int startE = *it;
@@ -150,10 +150,48 @@ void NNCrust::traverseE()
         }
         inclEdges.erase(rem);
     }
-    for (std::vector<int>::iterator it3=vOrder.begin(); it3!=vOrder.end(); ++it3)
-        qDebug() << ' ' << *it3;
+    vOrder.push_back(vS);
+    return vOrder;
 }
 
-Mesh NNCrust::getM(){
-    return saved;
+
+vector<GeomVert> NNCrust::construct(QVector<double> qv_x, QVector<double> qv_y)
+{
+    vector<Point> points;
+    for(int i = 0; i < qv_x.size(); i++){
+        points.push_back(Point(qv_x.at(i),qv_y.at(i)));
+    }
+
+    Delaunay dt;
+    dt.insert(points.begin(),points.end());
+
+    vector<GeomVert> tobeAdd;
+
+    Point dummy;
+    for (Face_iterator fit = dt.faces_begin();
+            fit != dt.faces_end();
+            ++fit)
+    {
+         dummy = fit->vertex(0)->point();
+         GeomVert add1 = GeomVert(dummy.x(),dummy.y(),0.0);
+         tobeAdd.push_back(add1);
+
+         dummy = fit->vertex(1)->point();
+         GeomVert add2 = GeomVert(dummy.x(),dummy.y(),0.0);
+         tobeAdd.push_back(add2);
+         dummy = fit->vertex(2)->point();
+
+         GeomVert add3 = GeomVert(dummy.x(),dummy.y(),0.0);
+         tobeAdd.push_back(add3);
+         saved.AddFacet(tobeAdd);
+         tobeAdd.clear();
+    }
+    pickEdges();
+    vector<int> vOrd = traverseE();
+    vector<GeomVert> retVal;
+    for(int i = 0; i < vOrd.size(); i++){
+        GeomVert cV = saved.GetGeomVertex(vOrd[i]);
+        retVal.push_back(cV);
+    }
+    return retVal;
 }

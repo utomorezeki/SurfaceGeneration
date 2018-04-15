@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1293</width>
-    <height>521</height>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,9 +27,9 @@
    <widget class="QPushButton" name="clear">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>410</x>
       <y>10</y>
-      <width>89</width>
+      <width>51</width>
       <height>25</height>
      </rect>
     </property>
@@ -134,7 +134,7 @@
      <rect>
       <x>500</x>
       <y>380</y>
-      <width>171</width>
+      <width>111</width>
       <height>71</height>
      </rect>
     </property>
@@ -413,7 +413,7 @@
      <string>3D Surfaces:</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>1160</x>
@@ -452,6 +452,45 @@
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="NNCrust">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>10</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>NNCrust</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Crust">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>40</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Crust</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="delPt">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>390</y>
+      <width>51</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Del Pt</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

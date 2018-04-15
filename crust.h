@@ -1,5 +1,5 @@
-#ifndef NNCRUST_H
-#define NNCRUST_H
+#ifndef CRUST_H
+#define CRUST_H
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Delaunay_triangulation_2.h>
 #include <CGAL/Simple_cartesian.h>
@@ -11,7 +11,7 @@ typedef CGAL::Delaunay_triangulation_2<K> Delaunay;
 typedef K::Point_2 Point;
 typedef Delaunay::Face_iterator Face_iterator;
 
-class NNCrust
+class Crust
 {
 public:
     void test();
@@ -23,6 +23,9 @@ public:
 private:
     Mesh saved;
     std::set<int> inclEdges;
+    vector<GeomVert> oriPts;
+    bool inOri(GeomVert check);
 };
 
-#endif // NNCRUST_H
+
+#endif // CRUST_H

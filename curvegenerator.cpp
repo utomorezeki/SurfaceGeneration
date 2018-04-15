@@ -35,6 +35,8 @@ CurveGenerator::CurveGenerator(QWidget *parent) :
     ui->subdSlider->setTickInterval(1);
     init = true;
     init2 = true;
+    initRecon = true;
+    initReconCurve = true;
     bez = false;
     cbBS = false;
     cSD = false;
@@ -81,13 +83,6 @@ CurveGenerator::CurveGenerator(QWidget *parent) :
     ui->wSpin->setSingleStep(0.05);
     uThreeD = 0.05;
     wThreeD = 0.05;
-
-    NNCrust test;
-    test.initial();
-    //qDebug() << "BOOL RETVAL: " << test.angleQual(0,0,1);
-    //qDebug() << "BOOL RETVAL: " << test.angleQual(3,3,5);
-    test.pickEdges();
-    test.traverseE();
 
 }
 
@@ -291,6 +286,8 @@ void CurveGenerator::on_clear_clicked()
     gr_y.clear();
     pt_x.clear();
     pt_y.clear();
+    gx_Recon.clear();
+    gy_Recon.clear();
     ui->ctrlSlider->setValue(0);
     ui->xSlider->setEnabled(false);
     ui->ySlider->setEnabled(false);
@@ -308,6 +305,8 @@ void CurveGenerator::plot()
 {
     gr_x.clear();
     gr_y.clear();
+    gx_ReconCurv.clear();
+    gy_ReconCurv.clear();
     if(bez)
     {
         for(double i = 0.0; i < 1.0; i += (1.0 / revSlices)){
@@ -315,6 +314,14 @@ void CurveGenerator::plot()
             double y = Mathematics::compYPtBezMan(i,&qv_y);
             gr_x.append(x);
             gr_y.append(y);
+        }
+        if(gx_Recon.size() > 0){
+            for(double i = 0.0; i < 1.0; i += (1.0 / revSlices)){
+                double x = Mathematics::compXPtBezMan(i,&gx_Recon);
+                double y = Mathematics::compYPtBezMan(i,&gy_Recon);
+                gx_ReconCurv.append(x);
+                gy_ReconCurv.append(y);
+            }
         }
     }
     else if(cbBS && qv_x.size() > 0)
@@ -350,6 +357,22 @@ void CurveGenerator::plot()
         init =false;
     }
     curve->setData(gr_x,gr_y);
+
+    static QCPCurve *curveRecon;
+    if(initRecon){
+        curveRecon = new QCPCurve(ui->plot->xAxis,ui->plot->yAxis);
+        initRecon =false;
+    }
+    curveRecon->setPen(QPen(Qt::magenta));
+    curveRecon->setData(gx_Recon,gy_Recon);
+
+    static QCPCurve *curveReconCurv;
+    if(initReconCurve){
+        curveReconCurv = new QCPCurve(ui->plot->xAxis,ui->plot->yAxis);
+        initReconCurve =false;
+    }
+    curveReconCurv->setPen(QPen(Qt::yellow));
+    curveReconCurv->setData(gx_ReconCurv,gy_ReconCurv);
     ui->plot->graph(2)->setData(pt_x,pt_y);
     ui->plot->replot();
     ui->plot->update();
@@ -556,4 +579,45 @@ void CurveGenerator::on_uSpin_valueChanged(double arg1)
 void CurveGenerator::on_wSpin_valueChanged(double arg1)
 {
     wThreeD = arg1;
+}
+
+void CurveGenerator::on_NNCrust_clicked()
+{
+    NNCrust test;
+    vector<GeomVert> vOrd = test.construct(qv_x,qv_y);
+    for(int k = 0; k < vOrd.size(); k++){
+        GeomVert cV = vOrd[k];
+        gx_Recon.append(cV.GetCo(0));
+        gy_Recon.append(cV.GetCo(1));
+    }
+    plot();
+}
+
+void CurveGenerator::on_Crust_clicked()
+{
+    Crust test;
+    vector<GeomVert> vOrd = test.construct(qv_x,qv_y);
+    for(int k = 0; k < vOrd.size(); k++){
+        GeomVert cV = vOrd[k];
+        gx_Recon.append(cV.GetCo(0));
+        gy_Recon.append(cV.GetCo(1));
+    }
+    plot();
+}
+
+void CurveGenerator::on_delPt_clicked()
+{
+    if(ptIdx != -1)
+    {
+        qv_x.remove(ptIdx);
+        qv_y.remove(ptIdx);
+        pt_x.clear();
+        pt_y.clear();
+        ptIdx = -1;
+        QString printed = "# of ctrlpoints: ";
+        printed.append(QString::number(qv_x.size()));
+        ui->ctrlLabel->setText(printed);
+        ui->ctrlSlider->setValue(qv_x.size());
+        plot();
+    }
 }

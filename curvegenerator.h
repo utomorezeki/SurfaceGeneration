@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "mesh.h"
 #include "nncrust.h"
+#include "crust.h"
 
 namespace Ui {
 class CurveGenerator;
@@ -61,11 +62,17 @@ private slots:
 
     void on_wSpin_valueChanged(double arg1);
 
+    void on_NNCrust_clicked();
+
+    void on_Crust_clicked();
+
+    void on_delPt_clicked();
+
 private:
     Ui::CurveGenerator *ui;
-    QVector<double> qv_x,qv_y,gr_x,gr_y,pt_x,pt_y, qv2_x, qv2_y,gr2_x,gr2_y,pt2_x,pt2_y;
+    QVector<double> qv_x,qv_y,gr_x,gr_y,pt_x,pt_y, qv2_x, qv2_y,gr2_x,gr2_y,pt2_x,pt2_y,gx_Recon,gy_Recon,gx_ReconCurv,gy_ReconCurv;
     int ptIdx,subd, ptIdx2, revSlices, extDepth;
-    bool bez,cbBS,cSD,qSD,init, init2,bez2,cbBS2;
+    bool bez,cbBS,cSD,qSD,init, init2,bez2,cbBS2, initRecon, initReconCurve;
     double subdivideU, uThreeD,wThreeD;
 };
 

@@ -36,7 +36,8 @@ SOURCES += \
     mesh.cpp \
     generate3d.cpp \
     polyhedron.cpp \
-    nncrust.cpp
+    nncrust.cpp \
+    crust.cpp
 
 HEADERS += \
         curvegenerator.h \
@@ -45,7 +46,8 @@ HEADERS += \
     mesh.h \
     generate3d.h \
     polyhedron.h \
-    nncrust.h
+    nncrust.h \
+    crust.h
 
 FORMS += \
         curvegenerator.ui
