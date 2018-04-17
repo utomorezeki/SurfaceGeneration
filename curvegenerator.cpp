@@ -371,7 +371,7 @@ void CurveGenerator::plot()
         curveReconCurv = new QCPCurve(ui->plot->xAxis,ui->plot->yAxis);
         initReconCurve =false;
     }
-    curveReconCurv->setPen(QPen(Qt::yellow));
+    curveReconCurv->setPen(QPen(Qt::red));
     curveReconCurv->setData(gx_ReconCurv,gy_ReconCurv);
     ui->plot->graph(2)->setData(pt_x,pt_y);
     ui->plot->replot();
@@ -620,4 +620,13 @@ void CurveGenerator::on_delPt_clicked()
         ui->ctrlSlider->setValue(qv_x.size());
         plot();
     }
+}
+
+void CurveGenerator::on_clr_recon_clicked()
+{
+    gx_Recon.clear();
+    gy_Recon.clear();
+    gx_ReconCurv.clear();
+    gy_ReconCurv.clear();
+    plot();
 }

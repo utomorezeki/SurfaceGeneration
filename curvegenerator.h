@@ -68,6 +68,8 @@ private slots:
 
     void on_delPt_clicked();
 
+    void on_clr_recon_clicked();
+
 private:
     Ui::CurveGenerator *ui;
     QVector<double> qv_x,qv_y,gr_x,gr_y,pt_x,pt_y, qv2_x, qv2_y,gr2_x,gr2_y,pt2_x,pt2_y,gx_Recon,gy_Recon,gx_ReconCurv,gy_ReconCurv;

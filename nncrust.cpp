@@ -6,12 +6,19 @@
 void NNCrust::test()
 {
     vector<Point> points;
-    points.push_back(Point(10,10));   // first point
-    points.push_back(Point(60,10));   // second point
-    points.push_back(Point(30,40));   // third point
-    points.push_back(Point(40,40));
-    points.push_back(Point(50,0));
-    points.push_back(Point(15,0));
+    points.push_back(Point(62,226));   // first point
+    points.push_back(Point(63,113));   // second point
+    points.push_back(Point(90,58));   // third point
+    points.push_back(Point(146,50));
+    points.push_back(Point(191,159));
+    points.push_back(Point(230,163));
+    points.push_back(Point(281,58));   // first point
+    points.push_back(Point(322,69));   // second point
+    points.push_back(Point(338,150));   // third point
+    points.push_back(Point(334,286));
+    points.push_back(Point(247,351));
+    points.push_back(Point(178,356));
+    points.push_back(Point(138,316));
 
     Delaunay dt;
     dt.insert(points.begin(),points.end());
@@ -103,6 +110,7 @@ void NNCrust::pickEdges()
                 qualDeg.push_back(j);
             }
         }
+
         currE = saved.GetEdge(currV.GetIncEdge(qualDeg[0]));
         minMag = rangeMht(saved.GetGeomVertex(currE.GetVertex(0)),saved.GetGeomVertex(currE.GetVertex(1)));
         int minE2 = qualDeg[0];
@@ -131,7 +139,8 @@ vector<int> NNCrust::traverseE()
     vOrder.push_back(vS);
 
     int totalSz = inclEdges.size();
-    for(int i=0; i < totalSz; i++){
+    for(int i=0; i < totalSz; i++)
+    {
         int rem;
         for(std::set<int>::iterator itIn=inclEdges.begin(); itIn!=inclEdges.end();itIn++)
         {
