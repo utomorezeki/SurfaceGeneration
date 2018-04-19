@@ -167,7 +167,7 @@ vector<GeomVert> Gen3D::sweepCalcPlane(double yVal, double xVal, QVector<double>
 
 void Gen3D::extBezCalcMesh(Mesh *mesh, Polyhedron poly, double uInt, double vInt, int revExt)
 {
-    for (double curV = 0; curV < 1.0 - vInt ; curV+=vInt)
+    for (double curV = 0; curV <= 1.0; curV+=vInt)
     {
         vector<GeomVert> fGV,sGV;
         fGV = extBezCalcPlane(poly,uInt,curV);
@@ -187,6 +187,7 @@ void Gen3D::extBezCalcMesh(Mesh *mesh, Polyhedron poly, double uInt, double vInt
             mesh->AddFacet(toBeAdded);
             toBeAdded.clear();
         }
+        //revExt == 1 means this one is for revolution
         if (revExt){
             int j = fGV.size() - 1;
             toBeAdded.push_back(fGV[j]);

@@ -316,7 +316,7 @@ void CurveGenerator::plot()
             gr_y.append(y);
         }
         if(gx_Recon.size() > 0){
-            for(double i = 0.0; i < 1.0; i += (1.0 / revSlices)){
+            for(double i = 0.0; i <= 1.0; i += (1.0 / revSlices)){
                 double x = Mathematics::compXPtBezMan(i,&gx_Recon);
                 double y = Mathematics::compYPtBezMan(i,&gy_Recon);
                 gx_ReconCurv.append(x);
@@ -339,16 +339,39 @@ void CurveGenerator::plot()
             gr_x.append(x);
             gr_y.append(y);
         }
+        if(gx_Recon.size() > 0){
+            QVector<int> tR = Mathematics::calcT(gx_Recon.size());
+            for(double uR = 0.0; uR < tR.last(); uR += (1.0 / revSlices)){
+                QVector<double> n4sR = Mathematics::calcN4s(uR,tR);
+                double xR = 0;
+                double yR = 0;
+                for(int nR = 0; nR < gx_Recon.size(); nR++)
+                {
+                    xR += gx_Recon.at(nR) * n4sR.at(nR);
+                    yR += gy_Recon.at(nR) * n4sR.at(nR);
+                }
+                gx_ReconCurv.append(xR);
+                gy_ReconCurv.append(yR);
+            }
+        }
     }
     else if(cSD && qv_x.size() > 0)
     {
         gr_x = Mathematics::subdivide(qv_x,subd,subdivideU);
         gr_y = Mathematics::subdivide(qv_y,subd,subdivideU);
+        if(gx_Recon.size() > 0){
+            gx_ReconCurv = Mathematics::subdivide(gx_Recon,subd,subdivideU);
+            gy_ReconCurv = Mathematics::subdivide(gy_Recon,subd,subdivideU);
+        }
     }
     else if(qSD)
     {
         gr_x = Mathematics::subdivBspl(qv_x,subd);
         gr_y = Mathematics::subdivBspl(qv_y,subd);
+        if(gx_Recon.size() > 0){
+            gx_ReconCurv = Mathematics::subdivBspl(gx_Recon,subd);
+            gy_ReconCurv = Mathematics::subdivBspl(gy_Recon,subd);
+        }
     }
     ui->plot->graph(0)->setData(qv_x,qv_y);
     static QCPCurve *curve;
@@ -506,12 +529,23 @@ void CurveGenerator::on_triple_clicked()
 
 void CurveGenerator::on_pushButton_clicked()
 {
+    //rev
     Mesh mesh;
     Polyhedron poly = Gen3D::revCalcFaces(gr_x,gr_y,&mesh, revSlices);
     print3D(mesh, "revolution.off");
+
+    //rev RECON
+    Mesh meshRecon;
+    Polyhedron polyRecon = Gen3D::revCalcFaces(gx_ReconCurv,gy_ReconCurv,&meshRecon, revSlices);
+    print3D(meshRecon, "revolutionRecon.off");
+
     Mesh mesh1;
     Gen3D::extBezCalcMesh(&mesh1, poly, uThreeD,wThreeD, 1);
     print3D(mesh1, "BEZ.off");
+
+    Mesh mesh2;
+    Gen3D::extBezCalcMesh(&mesh2, polyRecon, uThreeD,wThreeD, 1);
+    print3D(mesh2, "BEZrecon.off");
 }
 
 void CurveGenerator::print3D(Mesh mesh, std::string fileNm)
@@ -541,15 +575,35 @@ void CurveGenerator::print3D(Mesh mesh, std::string fileNm)
 
 void CurveGenerator::on_pushButton_2_clicked()
 {
+    //extrusion
     Mesh mesh;
     Polyhedron poly = Gen3D::extCalcFaces(gr_x,gr_y,&mesh, extDepth);
+
+    //Recon Extrusion
+    Mesh meshRecon;
+    Polyhedron polyRecon = Gen3D::extCalcFaces(gx_ReconCurv,gy_ReconCurv,&meshRecon, extDepth);
+
+    //bezier surf
     Mesh mesh1;
     Gen3D::extBezCalcMesh(&mesh1, poly, uThreeD,wThreeD, 0);
+
+    Mesh mesh1Recon;
+    Gen3D::extBezCalcMesh(&mesh1Recon, polyRecon, uThreeD,wThreeD, 0);
+
+    //cubic b-spline surf
     Mesh mesh2;
     Gen3D::extCBBSCalcMesh(&mesh2, poly, uThreeD,wThreeD, 0);
+
+    //cubic b-spline surf
+    Mesh mesh2Recon;
+    Gen3D::extCBBSCalcMesh(&mesh2Recon, polyRecon, uThreeD,wThreeD, 0);
+
+    print3D(meshRecon, "extrusionRECON.off");
     print3D(mesh, "extrusion.off");
     print3D(mesh1, "BEZ.off");
+    print3D(mesh1Recon, "BEZrecon.off");
     print3D(mesh2, "CBBS.off");
+    print3D(mesh2Recon, "CBBSrecon.off");
 }
 
 void CurveGenerator::on_pushButton_3_clicked()
